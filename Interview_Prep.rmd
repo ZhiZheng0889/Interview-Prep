@@ -1,0 +1,80 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+### Given a dictionary consisting of many roots and a sentence, stem all the words in the sentence with the root forming it.
+
+Stemming is commonly used in text and sentiment analysis. In this question, you will write a Python function that will convert certain words from the list to their root form - Interview Query.
+
+#### Input:
+
+The function will take two arguments: list of root words and sentence.  
+
+
+roots = ["cat", "bat", "rat"]
+sentence = "the cattle was rattled by the battery"
+ 
+#### Output:
+
+It will return the sentence with root words. 
+
+
+"the cat was rat by the bat"
+
+```{r}
+stem_sentence <- function(roots, sentence) {
+  # Step 1: Split the sentence into words
+  words <- unlist(strsplit(sentence, " "))
+  
+  # Step 2: Replace words in the sentence with their roots
+  for (i in 1:length(words)) {
+    for (root in roots) {
+      if (startsWith(words[i], root)) {
+        words[i] <- root
+        break  # Once a root is found, no need to check further roots
+      }
+    }
+  }
+  
+  # Step 3: Reconstruct the sentence
+  return(paste(words, collapse = " "))
+}
+
+# Test the function
+roots <- c("cat", "bat", "rat")
+sentence <- "the cattle was rattled by the battery"
+result <- stem_sentence(roots, sentence)
+print(result)  # Output: "the cat was rat by the bat"
+
+```
+
+```{r}
+# Function to check if a string is a palindrome
+is_palindrome <- function(text) {
+  
+  # Step 1: Convert the string to lowercase
+  text <- tolower(text)
+  
+  # Step 2: Clean the string by removing non-alphanumeric characters
+  text <- gsub("\\W+", "", text)
+  
+  # Step 3: Reverse the cleaned string
+  rev_text <- paste(rev(strsplit(text, NULL)[[1]]), collapse = "")
+  
+  # Step 4: Compare the original cleaned string with the reversed string
+  return(text == rev_text)
+}
+
+# Step 5: Create a list of test strings
+List <- c('Anna', '**Radar****','Abid','(Level)', 'Data')
+
+# Step 6: Loop through the list and check each string
+for (text in List) {
+  # Print the result for each string
+  print(paste("Is", text, "a palindrome?", is_palindrome(text)))
+}
+
+```
+
+

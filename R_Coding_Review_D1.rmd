@@ -1,0 +1,352 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+### R Basics and Data Structures
+
+#### 1. **Review R Syntax, Data Types, and Structures**
+
+**R Syntax Basics:**
+
+-   **Variables and Assignments:**
+
+```{r}
+x <- 5
+
+y <- "Hello, R!"
+
+z <- TRUE
+
+```
+
+-   **Basic Arithmetic Operations:**
+
+```{r}
+add <- 10+5
+
+diff <- 10-5
+
+prod <- 10*5
+
+quot <- 10/5
+
+vec1 <- c(1,2,3,4)
+vec2 <- c(4,5,6)
+
+vec_sum <- vec1 + vec2
+vec_diff <- vec2 - vec1
+vec_prod <- vec2 * vec1
+
+vec_quot <- vec2 / vec1
+
+vec_sum
+vec_diff
+vec_prod
+vec_quot
+
+
+```
+-   **Advanced Arithmetic Operations:**
+
+```{r}
+e <- 3
+f <- 4
+product <- e * f  # product is 12
+
+mat1 <- matrix(1:4, nrow = 2)
+mat2 <- matrix(4:1, nrow = 2)
+mat_prod <- mat1 %*% mat2  # Matrix multiplication
+g <- 25
+h <- 5
+quotient <- g / h  # quotient is 5
+vec_quotient <- vec1 / vec2  # vec_quotient is c(0.25, 0.4, 0.5)
+
+i <- 2
+j <- 3
+power_result <- i ^ j  # power_result is 8 (2^3)
+vec_power <- vec1 ^ 2  # vec_power is c(1, 4, 9)
+
+
+```
+
+```{r}
+k <- 10
+l <- 3
+remainder <- k %% l  # remainder is 1 (10 %% 3)
+
+vec_modulus <- vec1 %% 2  # vec_modulus is c(1, 0, 1)
+
+m <- 10
+n <- 3
+int_div <- m %/% n  # int_div is 3 (10 %/% 3)
+
+vec_int_div <- vec1 %/% 2  # vec_int_div is c(0, 1, 1)
+
+
+```
+
+```{r}
+o <- -15
+abs_value <- abs(o)  # abs_value is 15
+
+vec_abs <- abs(c(-1, -2, -3))  # vec_abs is c(1, 2, 3)
+
+```
+
+
+```{r}
+p <- 16
+sqrt_value <- sqrt(p)  # sqrt_value is 4
+
+vec_sqrt <- sqrt(c(4, 9, 16))  # vec_sqrt is c(2, 3, 4)
+```
+
+```{r}
+numbers <- c(1, 2, 3, 4, 5)
+mean_value <- mean(numbers)  # mean_value is 3
+sd_value <- sd(numbers)  # sd_value is approximately 1.581
+```
+
+
+```{r}
+max_value <- max(numbers)  # max_value is 5
+min_value <- min(numbers)  # min_value is 1
+```
+
+
+**Data Types:**
+
+-   **Numeric:**
+
+```{r}
+num <- 42.5
+```
+
+
+-   **Character:**
+
+```{r}
+char <- "This is R programming"
+```
+
+
+-   **Logical:**
+
+```{r}
+bool <- TRUE
+bool2 < FALSE
+```
+
+
+-   **Factor:**
+
+```{r}
+factor_var <- factor(c("Male", "Female", "Female", "Male", "Female"))
+
+factor_var
+```
+
+
+
+**Data Structures:**
+
+-   **Vectors:**
+    
+```{r}
+vec <- c(1,2,3,4,5)
+char_vec <- c("a", "b", "c")
+
+vec
+char_vec
+
+```
+
+
+-   **Lists:**
+
+```{r}
+list1 <- list(name = c("John", "Makima"), age = 25, scores = c(90,85,88))
+
+list1
+```
+
+
+-   **Data Frames:**
+    
+```{r}
+df <- data.frame(name = c("Alice", "Bob", "Charlie"), age =c(25,30,35))
+
+df
+```
+
+    
+-   **Matrices:**
+
+```{r}
+matrice1 <- matrix(1:9, nrow = 3, ncol =  3)
+matrice2 <- matrix(1:16, ncol = 4, nrow =  4)
+matrice3 <- matrix(1:15, ncol = 4, nrow =  4)
+
+matrice1
+matrice2
+matrice3
+
+```
+
+
+#### 2. **Practice Writing Functions and Using Control Structures**
+
+**Writing Functions:**
+
+-   **Simple Function:**   
+
+```{r}
+addition <- function(a, b) {
+  return(a+b)
+}
+
+addition(3, 12)
+
+result <- addition(10, 30)
+
+result
+```
+
+  
+**Control Structures:**
+
+-   **If-Else:**
+
+```{r}
+num <- 10
+
+if (num > 0) {
+  print("positive number")
+}else {
+  print("Negative number")
+}
+
+
+```
+
+    
+-   **For Loop:**
+    
+```{r}
+for (i in 1:5) {
+  print(i)
+}
+```
+
+    
+-   **While Loop:**
+    
+```{r}
+counter <- 1
+
+while (counter <= 5) {
+  print(counter)
+  counter <- counter + 1
+}
+```
+
+
+### 3. **LeetCode Question: Two Sum (Easy)**
+
+**Problem Statement:**
+
+Given an array of integers `nums` and an integer `target`, return the indices of the two numbers such that they add up to `target`.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+
+```{r}
+two_sum_all_pairs <- function(nums, target) {
+  # Initialize an empty list to store the pairs
+  result_pairs <- list()
+  
+  # Iterate through each element in nums
+  for (i in seq_along(nums)) {
+    
+    # For each element, check the remaining elements
+    for (j in (i + 1):length(nums)) {
+      
+      # Check for NA values and skip them
+      if (is.na(nums[i]) || is.na(nums[j])) {
+        next
+      }
+      
+      # Check if the sum of the two elements equals the target
+      if (nums[i] + nums[j] == target) {
+        
+        # Store the pair of indices (1-based)
+        result_pairs[[length(result_pairs) + 1]] <- c(i, j)
+      }
+    }
+  }
+  
+  # Convert the list to a data frame for better readability (optional)
+  if (length(result_pairs) > 0) {
+    result_df <- do.call(rbind, result_pairs)
+    colnames(result_df) <- c("Index1", "Index2")
+    return(result_df)
+  } else {
+    return(NULL)  # Return NULL if no pairs are found
+  }
+}
+
+# Example usage
+nums <- c(1, 2, 3, 4, 5, 6)
+target <- 7
+result <- two_sum_all_pairs(nums, target)
+print(result)
+
+```
+```{r}
+two_sum <- function(nums, target) {
+  # Initialize an empty environment (hashmap) to store indices
+  hash_map <- new.env(hash = TRUE, parent = emptyenv())
+  result_pairs <- list()
+  
+  # Iterate through each element in nums
+  for (i in seq_along(nums)) {
+    complement <- target - nums[i]
+    
+    # Check if the complement exists in the hash_map
+    if (exists(as.character(complement), envir = hash_map)) {
+      # Retrieve all indices that match the complement
+      indices <- hash_map[[as.character(complement)]]
+      
+      # Store all pairs found
+      for (index in indices) {
+        result_pairs[[length(result_pairs) + 1]] <- c(index, i)
+      }
+    }
+    
+    # Store the index of the current number in hash_map
+    if (!exists(as.character(nums[i]), envir = hash_map)) {
+      hash_map[[as.character(nums[i])]] <- c(i)
+    } else {
+      hash_map[[as.character(nums[i])]] <- c(hash_map[[as.character(nums[i])]], i)
+    }
+  }
+  
+  # Convert the list to a data frame for better readability (optional)
+  if (length(result_pairs) > 0) {
+    result_df <- do.call(rbind, result_pairs)
+    colnames(result_df) <- c("Index1", "Index2")
+    return(result_df)
+  } else {
+    return(NULL)  # Return NULL if no pairs are found
+  }
+}
+
+# Example usage
+nums <- c(1, 2, 3, 4, 5, 6)
+target <- 7
+result <- two_sum(nums, target)
+print(result)
+
+```
+
