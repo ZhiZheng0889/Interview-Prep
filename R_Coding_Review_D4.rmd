@@ -1,0 +1,250 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(lubridate)  # For date manipulation
+```
+
+```{r}
+students_data <- data.frame(
+  student_id = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  subject = c("Math", "Science", "English", "Math", "Science", "English", "Math", "Science", "English"),
+  score = c(85, 90, 88, 78, 82, 85, 92, 95, 89)
+)
+```
+
+```{r}
+# Calculate average score per student
+average_scores1 <- students_data %>% 
+  group_by(student_id) 
+
+average_scores2 <- students_data %>% 
+  group_by(student_id) %>%
+  summarize(avg_score = mean(score))
+
+average_scores1
+average_scores2
+```
+```{r}
+# Reshape data from long to wide format
+
+wide_format <- students_data %>%
+  pivot_wider(names_from = subject, values_from = score)
+
+wide_format
+```
+
+```{r}
+# Expanded sample data
+students_data <- data.frame(
+  student_id = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+  subject = c("Math", "Science", "English", "Math", "Science", "English", "Math", "Science", "English"),
+  score = c(85, 90, 88, 78, 82, 85, 92, 95, 89),
+  exam_date = as.Date(c("2024-08-01", "2024-08-03", "2024-08-05",
+                        "2024-08-02", "2024-08-04", "2024-08-06",
+                        "2024-08-01", "2024-08-03", "2024-08-05")),
+  exam_type = c("Midterm", "Midterm", "Midterm", "Final", "Final", "Final", "Midterm", "Midterm", "Midterm")
+)
+
+print("Original Data:")
+print(students_data)
+
+```
+```{r}
+# Filter for Final exams
+final_exams <- students_data %>%
+  filter(exam_type == "Final")
+
+final_exams
+
+```
+
+```{r}
+# Average score per subject for Final exams
+avg_final_scores <- final_exams %>%
+  group_by(subject) %>%
+  summarize(
+    average_score = mean(score),
+    max_score = max(score),
+    min_score = min(score),
+    exam_count = n()
+  ) %>%
+  arrange(desc(average_score))  # Arrange in descending order of average score
+
+avg_final_scores
+
+```
+
+```{r}
+# Additional student demographics data
+students_info <- data.frame(
+  student_id = c(1, 2, 3),
+  name = c("Alice", "Bob", "Charlie"),
+  age = c(20, 22, 21),
+  major = c("Physics", "Chemistry", "Mathematics")
+)
+
+students_info
+
+# Join students_data with students_info
+merged_data1 <- students_data %>%
+  left_join(students_info, by = "student_id")
+
+merged_data2 <- students_data %>%
+  right_join(students_info, by = "student_id")
+
+
+merged_data1
+merged_data2
+
+```
+
+```{r}
+# Reshape data from long to wide format
+wide_format <- merged_data %>%
+  select(student_id, name, subject, score, exam_type) %>%
+  pivot_wider(
+    names_from = subject,
+    values_from = score,
+    names_prefix = "score_",
+    values_fn = list(score = mean)  # In case of multiple scores per subject
+  )
+
+
+wide_format
+
+```
+
+```{r}
+# Introduce some missing scores for demonstration
+students_data_with_na <- students_data
+students_data_with_na$score[c(2, 5)] <- NA  # Set some scores to NA
+
+students_data_with_na
+
+# Identify missing data
+missing_data <- students_data_with_na %>%
+  filter(is.na(score))
+
+missing_data
+
+# Handle missing data by imputing with the average score per subject
+imputed_data <- students_data_with_na %>%
+  group_by(subject) %>%
+  mutate(score = ifelse(is.na(score), mean(score, na.rm = TRUE), score)) %>%
+  ungroup()
+
+imputed_data
+
+```
+
+```{r}
+# Define passing score
+passing_score <- 80
+
+# Add a new column for pass/fail status
+students_with_status <- students_data %>%
+  mutate(status = ifelse(score >= passing_score, "Pass", "Fail"))
+
+students_with_status
+
+```
+
+```{r}
+# Average score per student per exam type
+avg_scores_student_exam <- students_data %>%
+  group_by(student_id, exam_type) %>%
+  summarize(
+    average_score = mean(score),
+    total_exams = n(),
+    .groups = 'drop'  # To ungroup after summarizing
+  ) %>%
+  arrange(student_id, exam_type)
+
+
+avg_scores_student_exam
+
+```
+
+```{r}
+# Cumulative average score per student
+cumulative_avg <- students_data %>%
+  arrange(student_id, exam_date) %>%  # Ensure data is ordered by student and date
+  group_by(student_id) %>%
+  mutate(cumulative_avg_score = cummean(score)) %>%
+  ungroup()
+
+cumulative_avg
+
+```
+
+```{r}
+# Comprehensive data manipulation workflow
+comprehensive_analysis <- students_data_with_na %>%
+  # Join with student information
+  left_join(students_info, by = "student_id") %>%
+  
+  # Handle missing scores by imputing with subject-wise mean
+  group_by(subject) %>%
+  mutate(score = ifelse(is.na(score), mean(score, na.rm = TRUE), score)) %>%
+  ungroup() %>%
+  
+  # Add pass/fail status
+  mutate(status = ifelse(score >= passing_score, "Pass", "Fail")) %>%
+  
+  # Calculate average score per student per exam type
+  group_by(student_id, exam_type) %>%
+  summarize(
+    average_score = mean(score),
+    total_exams = n(),
+    .groups = 'drop'
+  ) %>%
+  
+  # Join back with student info to include names
+  left_join(students_info, by = "student_id") %>%
+  
+  # Arrange the final dataset
+  arrange(student_id, exam_type)
+
+comprehensive_analysis
+
+```
+
+###	LeetCode Question: Group Anagrams (Medium)
+
+```{r}
+groupAnagrams <- function(strs) {
+  # Create a list to hold the groups
+  groups <- list()
+  
+  # Loop through each string in the list
+  for (str in strs) {
+    # Sort the characters of the string to form the key
+    key <- paste(sort(unlist(strsplit(str, ""))), collapse = "")
+    
+    # Check if the key already exists in the list
+    if (key %in% names(groups)) {
+      groups[[key]] <- c(groups[[key]], str)
+    } else {
+      groups[[key]] <- c(str)
+    }
+  }
+  
+  # Return the values of the list as a list of groups
+  return(unname(groups))
+}
+
+# Test the function
+strs <- c("eat", "tea", "tan", "ate", "nat", "bat")
+anagrams <- groupAnagrams(strs)
+
+print("Grouped Anagrams:")
+print(anagrams)
+
+```

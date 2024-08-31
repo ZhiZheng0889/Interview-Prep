@@ -1,0 +1,52 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+### LeetCode Question: Best Time to Buy and Sell Stock (Easy) 
+
+```{r}
+maxProfit <- function(prices) {
+  # Initialize min_price to a very large number (infinity)
+  # This will help us track the lowest price encountered so far
+  min_price <- Inf
+  
+  # Initialize max_profit to 0
+  # This will store the maximum profit found so far
+  max_profit <- 0
+  
+  # Loop through each price in the prices vector
+  for (price in prices) {
+    # If the current price is lower than min_price, update min_price
+    # This means we have found a new lower price to consider for buying
+    if (price < min_price) {
+      min_price <- price
+    } 
+    # If the current price is not lower than min_price, calculate the profit
+    # This potential profit is the difference between the current price (sell) and the min_price (buy)
+    else if (price - min_price > max_profit) {
+      # If this profit is greater than the current max_profit, update max_profit
+      # This means we have found a new maximum profit
+      max_profit <- price - min_price
+    }
+  }
+  
+  # After looping through all prices, return the maximum profit found
+  return(max_profit)
+}
+
+# Example usage:
+# Define a vector of stock prices where each element represents the stock price on a given day
+prices <- c(7, 1, 5, 3, 6, 4)
+
+# Call the maxProfit function with the prices vector and store the result in max_profit
+max_profit <- maxProfit(prices)
+
+# Print the maximum profit
+# In this example, the expected output is 5, which corresponds to buying at price 1 and selling at price 6
+print(max_profit)  # Output should be 5
+
+
+```
+
+

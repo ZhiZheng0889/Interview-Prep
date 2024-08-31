@@ -1,0 +1,173 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(tidyr)
+library(readr)
+library(readxl)
+library(DBI)
+library(httr)
+```
+
+```{r}
+# Import CSV
+data <- read_csv("data.csv")
+
+# Import CSV with custom settings
+data <- read_csv("data.csv", 
+                 col_types = cols(
+                   column1 = col_double(),
+                   column2 = col_character(),
+                   column3 = col_date(format = "%Y-%m-%d")
+                 ),
+                 na = c("", "NA", "N/A"),
+                 skip = 1, # skip the first row
+                 comment = "#") # ignore lines starting with #
+
+```
+
+```{r}
+# Export to CSV
+
+write_csv(data, "output.csv")
+
+# Exporting CSV with additional settings: You might want to export data with specific delimiters or line endings.
+# Export to CSV with custom delimiter and line ending
+write_delim(data, "output.csv", delim = ";", eol = "\n")
+
+```
+
+```{r}
+# Import Excel
+data <- read_excel("data.xlsx", sheet = 1)
+
+# Import specific range from Excel
+data <- read_excel("data.xlsx", range = "B2:D10", sheet = "Sheet1")
+
+sheets <- excel_sheets("data.xlsx")
+
+# Reading multiple sheets at once: You can loop through all sheets in an Excel file and import them into a list of data frames.
+# Read all sheets into a list of data frames
+data_list <- lapply(sheets, function(sheet) {
+  read_excel("data.xlsx", sheet = sheet)
+})
+```
+
+```{r}
+# Export to Excel
+write_xlsx(data, "output.xlsx")
+
+
+```
+
+```{r}
+# Connect to SQL Database
+con <- dbConnect(RSQLite::SQLite(), "my_datababse.sqlite")
+
+# Read from SQL
+data <- dbGetQuery(con, "SELECT * FROM my_table")
+
+# Write to SQL
+dbWriteTable(con, "new_table", data)
+
+# Disconnect
+dbDisconnect(con)
+
+# Connect to database
+con <- dbConnect(RSQLite::SQLite(), "my_database.sqlite")
+
+# Parameterized query
+query <- "SELECT * FROM my_table WHERE column1 = ? AND column2 = ?"
+data <- dbGetQuery(con, query, params = list(value1, value2))
+print(data)
+
+# Disconnect
+dbDisconnect(con)
+
+# Bulk Insert Operations: For large datasets, bulk inserts are more efficient than inserting one row at a time
+# Assuming data is a data frame
+dbWriteTable(con, "my_table", data, append = TRUE, row.names = FALSE)
+
+
+```
+
+```{r}
+# API request
+response <- GET("https://api.example.com/data")
+
+# Check status
+if (status_code(response) == 200) {
+  data <- content(response, as = "parsed")
+  print(data)
+} else {
+  print("Failed to retrieve data.")
+}
+```
+
+
+###	LeetCode Question: Merge Two Sorted Lists (Easy)
+
+```{r}
+# This is PYTHON code
+
+# Recursive Approach:
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val  # Initialize node value
+        self.next = next  # Pointer to the next node
+
+def mergeTwoLists(l1, l2):
+    # Base cases: if one list is empty, return the other
+    if not l1:
+        return l2
+    if not l2:
+        return l1
+    
+    # Recursively merge the two lists
+    if l1.val < l2.val:
+        l1.next = mergeTwoLists(l1.next, l2)
+        return l1  # Return l1 as the head of the merged list
+    else:
+        l2.next = mergeTwoLists(l1, l2.next)
+        return l2  # Return l2 as the head of the merged list
+
+
+```
+
+```{r}
+# Iterative Approach:
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val  # Initialize node value
+        self.next = next  # Pointer to the next node
+
+def mergeTwoLists(l1, l2):
+    # Initialize a dummy node to build the merged list
+    dummy = ListNode()
+    current = dummy  # Pointer to the current node in the merged list
+    
+    # Iterate while both lists have nodes
+    while l1 and l2:
+        # Compare the values and attach the smaller node to the merged list
+        if l1.val < l2.val:
+            current.next = l1  # Link to l1
+            l1 = l1.next  # Move l1 to the next node
+        else:
+            current.next = l2  # Link to l2
+            l2 = l2.next  # Move l2 to the next node
+        current = current.next  # Move to the next node in the merged list
+    
+    # Attach the remaining nodes from l1 or l2 (if any)
+    current.next = l1 if l1 else l2
+    
+    # Return the merged list, starting from the node after dummy
+    return dummy.next
+
+```
+
+
+
